@@ -1,0 +1,335 @@
+
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота №5: Кошик товарів</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr; 
+            }
+        }
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+       
+        .product-list, .cart {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .product-item:last-child {
+            border-bottom: none; 
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            margin-right: 1rem;
+        }
+        .product-info {
+            flex-grow: 1; 
+        }
+        .product-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .product-price {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        .add-to-cart-btn {
+            background-color: #6366f1; 
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(99, 102, 241, 0.3);
+        }
+        .add-to-cart-btn:hover {
+            background-color: #8b5cf6;
+        }
+
+       
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .cart-item:last-child {
+            border-bottom: none; 
+        }
+        .cart-item-info {
+            flex-grow: 1;
+        }
+        .cart-item-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .cart-item-price {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+        .quantity-btn {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .quantity-btn:hover {
+            background-color: #cbd5e0;
+        }
+        .quantity-display {
+            padding: 0 0.75rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .remove-item-btn {
+            background-color: #ef4444; 
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            margin-left: 1rem;
+            box-shadow: 0 2px 5px rgba(239, 68, 68, 0.3);
+        }
+        .remove-item-btn:hover {
+            background-color: #dc2626;
+        }
+
+      
+        .cart-summary {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #edf2f7;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1a202c;
+            text-align: right;
+        }
+        .cart-total-value {
+            color: #6366f1; 
+            font-size: 1.5rem;
+        }
+        .empty-cart-message {
+            text-align: center;
+            color: #718096;
+            padding: 2rem;
+        }
+
+        .promo-code-section {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #edf2f7;
+        }
+        .promo-code-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #2d3748;
+        }
+        .promo-code-apply-btn {
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+        }
+        .promo-code-apply-btn:hover {
+            background-color: #45a049;
+        }
+
+        
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #4a5568;
+        }
+        .summary-line.total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-top: 1rem;
+        }
+
+     
+        .checkout-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #edf2f7;
+            padding-top: 1.5rem;
+        }
+        .checkout-btn {
+            background-color: #6366f1; 
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+        .checkout-btn:hover {
+            background-color: #8b5cf6;
+        }
+        .continue-shopping-btn {
+            background-color: #cbd5e0; 
+            color: #2d3748;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .continue-shopping-btn:hover {
+            background-color: #a0aec0;
+        }
+
+       
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #38a169; 
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .message-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .message-box.error {
+            background-color: #e53e3e; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+     
+        <div class="product-list">
+            <h2 class="section-title">Доступні товари</h2>
+            <div id="products-container">
+             
+            </div>
+        </div>
+
+        <div class="cart">
+            <h2 class="section-title">Кошик</h2>
+            <div id="cart-items-container">
+               
+                <p id="empty-cart-message" class="empty-cart-message">Кошик порожній.</p>
+            </div>
+
+            <div class="cart-summary">
+                <div class="summary-line">
+                    <span>Знижка:</span>
+                    <span id="discount-amount">$0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Доставка:</span>
+                    <span id="delivery-cost">$0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>Податок (10%):</span>
+                    <span id="tax-amount">$0.00</span>
+                </div>
+                <div class="summary-line total">
+                    <span>Всього:</span>
+                    <span id="cart-total-value" class="cart-total-value">$0.00</span>
+                </div>
+            </div>
+
+            <div class="promo-code-section">
+                <input type="text" id="promo-code-input" class="promo-code-input" placeholder="Промокод">
+                <button id="apply-promo-btn" class="promo-code-apply-btn">Застосувати промокод</button>
+            </div>
+
+            <div class="checkout-buttons">
+                <button class="checkout-btn">Перейти до оформлення</button>
+                <button class="continue-shopping-btn">Продовжити покупки</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="message-box" class="message-box"></div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
